@@ -2,8 +2,6 @@
 
 A sample project
 
-Sutil App Starter
-
 ## Run
 
 ```bash
