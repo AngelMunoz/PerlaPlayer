@@ -1,4 +1,4 @@
-# Perla Plsyer
+# Perla Player
 
 A sample project
 
