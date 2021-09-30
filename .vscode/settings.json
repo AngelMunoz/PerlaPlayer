@@ -1,0 +1,7 @@
+{
+    "files.exclude": {
+        "**/*.fs.js": true,
+        "**/bin": true,
+        "**/obj": true
+    }
+}

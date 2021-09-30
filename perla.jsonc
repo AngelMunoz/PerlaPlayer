@@ -1,0 +1,26 @@
+{
+  "$schema": "https://raw.githubusercontent.com/AngelMunoz/Perla/main/perla.schema.json",
+  "index": "./index.html",
+  "fable": {
+    "project": "./src/App.fsproj"
+  },
+  "devServer": {
+    "autoStart": true,
+    "port": 7331,
+    "mountDirectories": {
+      "./src": "/src"
+    },
+    "liveReload": true,
+    "useSSL": false
+  },
+  "build": {
+    "esbuildVersion": "0.13.2",
+    "target": "es2017",
+    "bundle": true,
+    "format": "esm",
+    "minify": true
+  },
+  "packages": {
+    "pouchdb-browser": "https://cdn.skypack.dev/pin/pouchdb-browser@v7.2.2-FKniyXeIaz5QWfcTj9xc/mode=imports/optimized/pouchdb-browser.js"
+  }
+}

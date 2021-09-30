@@ -1,0 +1,6 @@
+{
+  "imports": {
+    "pouchdb-browser": "https://cdn.skypack.dev/pin/pouchdb-browser@v7.2.2-FKniyXeIaz5QWfcTj9xc/mode=imports/optimized/pouchdb-browser.js"
+  },
+  "scopes": {}
+}
