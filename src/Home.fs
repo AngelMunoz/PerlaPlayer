@@ -1,6 +1,7 @@
 module Pages.Home
 
 open Sutil
+open Sutil.Styling
 open Components.Counter
 
 let Home () =
@@ -15,3 +16,11 @@ let Home () =
             Counter(Some 100)
         ]
     ]
+    |> withStyle [
+        rule
+            "article"
+            [ Css.displayFlex
+              Css.flexDirectionColumn
+              Css.alignContentCenter
+              Css.alignItemsCenter ]
+       ]

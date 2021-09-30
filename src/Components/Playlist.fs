@@ -16,15 +16,47 @@ type PlaylistProps =
     { currentSong: Song option
       playlist: Song array }
 
-let private songTemplate (host: Node) (song: Song) =
+let private (|Enter|Up|Down|Left|Right|Other|) pressed =
+    match pressed with
+    | "Enter" -> Enter
+    | "ArrowUp"
+    | "w" -> Up
+    | "ArrowLeft"
+    | "a" -> Left
+    | "ArrowDown"
+    | "s" -> Down
+    | "ArrowRight"
+    | "d" -> Right
+    | other -> Other other
+
+let private songTemplate (host: Node) (index: int, song: Song) =
     let onSelected _ =
         host.dispatchCustom ("on-selected-song", song)
         |> ignore
 
+    let keyDown (song: Song) (ev: KeyboardEvent) =
+        let target = (ev.target :?> HTMLElement)
+
+        let tryFocus (el: Node) =
+            match el |> Option.ofObj with
+            | Some el -> (el :?> HTMLElement).focus ()
+            | None -> ()
+
+        match ev.key with
+        | Up
+        | Left -> target.previousSibling |> tryFocus
+        | Right
+        | Down -> target.nextSibling |> tryFocus
+        | Enter ->
+            host.dispatchCustom ("on-selected-song", song)
+            |> ignore
+        | Other _ -> ()
 
     Html.li [
+        Attr.tabIndex index
         Html.text song.name
         on "dblclick" onSelected []
+        onKeyDown (keyDown song) []
     ]
 
 let private emptyList (isEmpty) =
@@ -66,7 +98,22 @@ let private styles =
           "ul"
           [ Css.maxHeight (vh 58)
             Css.overflowYAuto
-            Css.paddingBottom (em 5) ]
+            Css.paddingBottom (em 5)
+            Css.listStyleTypeNone
+            Css.padding 0 ]
+      rule "li" [ Css.padding (em 0.5) ]
+      rule
+          "li:hover"
+          [ Css.backgroundColor "var(--playlist-item-hover, #f0f2f2)"
+            Css.color "var(--playlist-item-hover-foreground, #0f2f2f)" ]
+      rule
+          "li:focus"
+          [ Css.borderStyleDotted
+            Css.borderColor "var(--playlist-item-focus, #402f2f)"
+            Css.borderWidth (px 2)
+            Css.outlineStyleDotted
+            Css.outlineWidth (px 2)
+            Css.outlineColor "var(--playlist-item-focus, #402f2f)" ]
       rule
           "footer"
           [ Css.padding (em 0.5)
@@ -103,7 +150,7 @@ let private Playlist (props: Store<PlaylistProps>) (host: Browser.Types.Node) =
             Html.h3 "Perla Playlist!"
         ]
         Html.ul [
-            Bind.each (files, songTemplate host)
+            Bind.eachi (files, songTemplate host)
         ]
         Html.footer [
             Bind.fragment isEmptyList emptyList

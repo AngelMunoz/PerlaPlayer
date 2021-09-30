@@ -27,3 +27,23 @@ module Pl =
             let! _ = Songs.CleanPlaylist()
             return! LoadSongs()
         }
+
+    let TryNextSong () =
+        let current = CurrentSong |> Store.getMap id
+        let playlist = Playlist |> Store.getMap id
+
+        let index =
+            match current with
+            | Some song ->
+                playlist
+                |> Array.tryFindIndex (fun s -> s._id = song._id)
+                |> Option.map
+                    (fun index ->
+                        if playlist.Length = index + 1 then
+                            0
+                        else
+                            index + 1)
+                |> Option.defaultValue 0
+            | None -> 0
+
+        CurrentSong <~ (playlist |> Array.tryItem index)

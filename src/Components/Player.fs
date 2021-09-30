@@ -7,7 +7,9 @@ open Sutil.Attr
 open Sutil.Styling
 
 open type Feliz.length
+
 open Types
+open Stores
 
 type PlayerProps =
     { currentSong: Song option
@@ -16,6 +18,9 @@ type PlayerProps =
 let private revokeUrl (ev: Event) =
     let audio = (ev.target :?> HTMLAudioElement)
     URL.revokeObjectURL audio.src
+
+let private requestNext _ = Pl.TryNextSong()
+
 
 let styles =
     [ rule
@@ -42,17 +47,23 @@ let private Player (props: Store<PlayerProps>) (host: Browser.Types.Node) =
         |> Store.filter (fun song -> song.IsSome)
         |> Store.map (fun song -> URL.createObjectURL song.Value.song)
 
+    let songName =
+        props
+        |> Store.map (fun props -> props.currentSong)
+        |> Store.filter (fun song -> song.IsSome)
+        |> Store.map (fun song -> song.Value.name)
+
     Html.article [
         adoptStyleSheet styles
         Html.nav [
-            Html.button [ Html.text "shuffle" ]
-            Html.button [ Html.text "repeat" ]
+            Bind.fragment songName Html.text
         ]
         Html.audio [
             Attr.autoPlay true
             Attr.controls true
             Bind.attr ("src", songSrc)
             on "canplay" revokeUrl []
+            on "ended" requestNext []
         ]
     ]
 
