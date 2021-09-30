@@ -21,5 +21,9 @@ export async function LoadSongs() {
         count: docs.rows,
         docs: docs.rows.map(row => ({ ...row.doc, song: row.doc?.attachments?.song, attachments: undefined }))
     };
+}
 
+export async function CleanPlaylist() {
+    const docs = await db.allDocs();
+    return await Promise.all(docs.rows.map(row => db.remove(row.id, row.value?.rev)));
 }

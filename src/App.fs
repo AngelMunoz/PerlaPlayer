@@ -7,6 +7,7 @@ open Types
 open Pages.Home
 open Pages.Notes
 open Stores
+open Browser.Types
 
 Pl.LoadSongs()
 |> Promise.map (fun _ -> printfn "Songs Loaded")
@@ -23,12 +24,15 @@ let private app () =
         | Page.Home -> Home()
         | Page.Notes -> Notes()
 
+    let selectSong (event: CustomEvent<Song>) = CurrentSong <~ event.detail
+
     Html.app [
         Html.main [ Bind.fragment page getPage ]
         Html.custom (
             "perla-playlist",
             [ Bind.attr ("currentSong", CurrentSong)
-              Bind.attr ("playlist", Playlist) ]
+              Bind.attr ("playlist", Playlist)
+              onCustomEvent "on-selected-song" selectSong [] ]
         )
         Html.custom (
             "perla-player",

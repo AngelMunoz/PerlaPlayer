@@ -20,6 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Fable.Browser.Url" Version="1.0.3" />
+    <PackageReference Include="Fable.Promise" Version="3.1.0" />
     <PackageReference Include="Sutil" Version="1.0.0-beta-*" />
   </ItemGroup>
 

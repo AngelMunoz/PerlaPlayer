@@ -21,3 +21,9 @@ module Pl =
             |-> (fun songs ->
                 songs
                 |> Array.tryFind (fun song -> song._id = _id)))
+
+    let CleanPlaylist () =
+        promise {
+            let! _ = Songs.CleanPlaylist()
+            return! LoadSongs()
+        }
